@@ -14,7 +14,6 @@ class HorseDetail(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         horse_id = kwargs.get('pk')
         summary_horse_data = horse_query(horse_id)
-        print(summary_horse_data)
         
         try:
             horse = Horse.objects.get(nft_id=horse_id)
