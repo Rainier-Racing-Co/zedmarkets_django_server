@@ -11,22 +11,35 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wf!$i=e999xc=@j)m(53d77dwr^8_(#!=7ug#$1^vvj0nm@ix^'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+# Create Environmental Variables
+env = environ.Env(
+    SECRET_KEY=(str, ""),
+    DEBUG = (bool, False),
+    DB_NAME=(str, "db.sqlite3"),
+    DB_ENGINE=(str, "django.db.backends.sqlite3"),
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# Django Variables
+SECRET_KEY= env("SECRET_KEY")
+DEBUG= env("DEBUG")
+
+# Database Variables
+DB_ENGINE= env("DB_ENGINE")
+DB_NAME= env("DB_NAME")
 
 # Application definition
 
@@ -80,8 +93,8 @@ WSGI_APPLICATION = 'zedmarkets_server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': DB_ENGINE,
+        'NAME': os.path.join(BASE_DIR, DB_NAME),
     }
 }
 
